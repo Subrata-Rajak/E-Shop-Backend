@@ -3,10 +3,6 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const productSchema = new Schema({
-    product_id: {
-        type: Number,
-        required: true,
-    },
     owner_info: {
         email: {
             type: String,
@@ -29,18 +25,31 @@ const productSchema = new Schema({
         type: String,
         required: true,
     },
+    sub_category: {
+        type: String,
+    },
     brand: {
         type: String,
         required: true,
     },
-    imageUrl: {
-        type: String,
-        required: true,
-    },
-    stockQuantity: {
+    image_url: [
+        {
+            url: {
+                type: String,
+            },
+        }
+    ],
+    stock_quantity: {
         type: Number,
         required: true,
     },
+    reviews: [
+        {
+            review_id: {
+                type: String,
+            },
+        }
+    ]
 });
 
 const Product = mongoose.model('Product', productSchema);
