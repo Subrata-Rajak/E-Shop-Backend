@@ -13,9 +13,7 @@ const productCategorySchema = new Schema({
     },
     sub_categories: [
         {
-            sub_category_name: {
-                type: String,
-            }
+            type: String,
         }
     ],
 });

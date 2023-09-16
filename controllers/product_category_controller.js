@@ -34,9 +34,7 @@ const addSubCategory = async (req, res) => {
             return res.status(404).send({ message: "Category not found" });
         }
 
-        const newSubCategory = { "sub_category_name": subCategoryName };
-
-        existingCategory.sub_categories.push(newSubCategory);
+        existingCategory.sub_categories.push(subCategoryName);
         const updatedCategory = await existingCategory.save();
         res.status(201).send({ message: "Successfully added sub category", category: { ...updatedCategory._doc } });
     } catch (error) {

@@ -24,12 +24,7 @@ const userSchema = new Schema({
     },
     reviews_and_ratings: [
         {
-            product_id: {
-                type: String,
-            },
-            reviews_and_ratings_id: {
-                type: String,
-            },
+            type: String,
         }
     ],
     address: [
@@ -51,31 +46,26 @@ const userSchema = new Schema({
             },
             pincode: {
                 type: String,
+            },
+            selected: {
+                type: Boolean,
+                default: false,
             }
         }
     ],
     wish_list: [
         {
-            product_id: {
-                type: String,
-            }
+            type: String,
         }
     ],
     cart_list: [
         {
-            product_id: {
-                type: String,
-            }
+            type: String,
         }
     ],
     orders_list: [
         {
-            products_id: {
-                type: String,
-            },
-            order_id: {
-                type: String,
-            },
+            type: String,
         }
     ],
     gender: {

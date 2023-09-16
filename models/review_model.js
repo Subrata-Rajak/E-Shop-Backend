@@ -19,9 +19,7 @@ const reviewSchema = new Schema({
     },
     image_urls: [
         {
-            url: {
-                type: String,
-            }
+            type: String,
         }
     ],
     rating: {

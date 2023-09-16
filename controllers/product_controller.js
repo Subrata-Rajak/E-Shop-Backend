@@ -44,7 +44,7 @@ const getAllProducts = async (req, res) => {
 }
 
 const getProductById = async (req, res) => {
-    const { productId } = req.body;
+    const { productId } = req.query;
 
     try {
         const product = await Product.findById(productId);
@@ -53,7 +53,7 @@ const getProductById = async (req, res) => {
             return res.status(404).send({ message: "No Product Found with this id" });
         }
 
-        res.status(200).send({ product: { ...product._doc } });
+        res.status(200).send(product);
     } catch (error) {
         console.log(`Error while fetching product details by id: ${error}`);
         res.status(500).send({ message: "Something wrong happened" });
@@ -61,7 +61,7 @@ const getProductById = async (req, res) => {
 }
 
 const getProductsByOwner = async (req, res) => {
-    const { email } = req.body;
+    const { email } = req.query;
 
     try {
         const product = await Product.find({ 'owner_info.email': email });
@@ -70,7 +70,7 @@ const getProductsByOwner = async (req, res) => {
             return res.status(404).send({ message: "No Product Found with this owner" });
         }
 
-        res.status(200).send({ product });
+        res.status(200).send(product);
     } catch (error) {
         console.log(`Error while fetching product details by id: ${error}`);
         res.status(500).send({ message: "Something wrong happened" });
@@ -78,7 +78,7 @@ const getProductsByOwner = async (req, res) => {
 }
 
 const getProductsByBrand = async (req, res) => {
-    const { brand } = req.body;
+    const { brand } = req.query;
 
     try {
         const product = await Product.find({ brand });
@@ -87,9 +87,26 @@ const getProductsByBrand = async (req, res) => {
             return res.status(404).send({ message: "No Product Found with this id" });
         }
 
-        res.status(200).send({ product });
+        res.status(200).send(product);
     } catch (error) {
         console.log(`Error while fetching product details by id: ${error}`);
+        res.status(500).send({ message: "Something wrong happened" });
+    }
+}
+
+const getProductByCategory = async (req, res) => {
+    const { category } = req.query;
+
+    try {
+        const products = await Product.find({ category });
+
+        if (!products) {
+            return res.status(404).send({ message: "No product found of this category" });
+        }
+
+        res.status(200).send(products);
+    } catch (error) {
+        console.log(`Error while fetching products by category ${error}`);
         res.status(500).send({ message: "Something wrong happened" });
     }
 }

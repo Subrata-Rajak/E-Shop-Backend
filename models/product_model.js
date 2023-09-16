@@ -34,9 +34,7 @@ const productSchema = new Schema({
     },
     image_url: [
         {
-            url: {
-                type: String,
-            },
+            type: String,
         }
     ],
     stock_quantity: {
@@ -45,9 +43,7 @@ const productSchema = new Schema({
     },
     reviews: [
         {
-            review_id: {
-                type: String,
-            },
+            type: String,
         }
     ]
 });

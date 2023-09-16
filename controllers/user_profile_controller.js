@@ -1,13 +1,13 @@
 const User = require("../models/user_model");
 
 const getUserInfo = async (req, res) => {
-    const { email } = req.body;
+    const { email } = req.query;
 
     try {
         const existingUser = await User.findOne({ email });
 
         if (!existingUser) {
-            return res.status(404).send({ message: "User with this email" });
+            return res.status(404).send({ message: "User with this email  not found" });
         }
 
         res.status(200).send({ user: { ...existingUser._doc } });
@@ -18,7 +18,7 @@ const getUserInfo = async (req, res) => {
 }
 
 const addAddress = async (req, res) => {
-    const { email, country, state, city, landmark, pincode, area } = req.body;
+    const { email, country, state, city, landmark, pincode, area, selected } = req.body;
 
     try {
         const existingUser = await User.findOne({ email });
@@ -34,13 +34,14 @@ const addAddress = async (req, res) => {
             area,
             landmark,
             pincode,
+            selected,
         };
 
         existingUser.address.push(newAddress);
 
         const updatedUser = await existingUser.save();
 
-        res.status(200).send({ message: "Successfully updated address", user: { ...updatedUser._doc } });
+        res.status(201).send({ message: "Successfully updated address", user: { ...updatedUser._doc } });
     } catch (error) {
         console.log(`Error while adding address, ${error}`);
         res.status(500).send({ message: "Something wrong happened" });
@@ -57,7 +58,7 @@ const updateProfileImageUrl = async (req, res) => {
             return res.status(404).send({ message: "User with this email not found" });
         }
 
-        res.status(200).send({ message: "Profile Image updated successfully", user: { ...updatedUser._doc } });
+        res.status(201).send({ message: "Profile Image updated successfully", user: { ...updatedUser._doc } });
     } catch (error) {
         console.log(`Error while updating profile image url, ${error}`);
         res.status(500).send({ message: "Something wrong happened" });
