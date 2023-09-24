@@ -104,11 +104,11 @@ const getProductByCategory = async (req, res) => {
             return res.status(404).send({ message: "No product found of this category" });
         }
 
-        res.status(200).send(products);
+        res.status(200).send({ products });
     } catch (error) {
         console.log(`Error while fetching products by category ${error}`);
         res.status(500).send({ message: "Something wrong happened" });
     }
 }
 
-module.exports = { addProduct, getAllProducts, getProductById, getProductsByOwner, getProductsByBrand };
+module.exports = { addProduct, getAllProducts, getProductById, getProductsByOwner, getProductsByBrand, getProductByCategory };

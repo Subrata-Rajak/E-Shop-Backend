@@ -42,11 +42,37 @@ const addToWishlist = async (req, res) => {
     }
 }
 
+const removeFromWishlist = async (req, res) => {
+    const { email, productId } = req.body;
+    try {
+        const wishlist = await WishList.findOne({ user_email: email });
+
+        if (!wishlist) {
+            return res.status(404).json({ message: 'Wishlist not found' });
+        }
+
+        const productIndex = wishlist.products.findIndex(item => item.product_id === productId);
+
+        if (productIndex === -1) {
+            return res.status(404).json({ message: 'Product not found in the wishlist' });
+        }
+
+        wishlist.products.splice(productIndex, 1);
+
+        await wishlist.save();
+
+        return res.status(201).json({ message: 'Product removed from wishlist successfully' });
+    } catch (err) {
+        console.error(`Error while removing from wishlist: ${err}`);
+        return res.status(500).json({ message: 'Internal Server Error' });
+    }
+}
+
 const getWishlist = async (req, res) => {
     const { email } = req.query;
 
     try {
-        const existingWishlist = await WishList.find({ user_email: email });
+        const existingWishlist = await WishList.findOne({ user_email: email });
 
         if (!existingWishlist) {
             return res.status(404).send({ message: "No wishlist found of this user" });
@@ -59,4 +85,26 @@ const getWishlist = async (req, res) => {
     }
 }
 
-module.exports = { addToWishlist, getWishlist };
+const isProductInWishlist = async (req, res) => {
+    const { email, productId } = req.query;
+
+    try {
+        const wishlist = await WishList.findOne({ user_email: email });
+
+        if (!wishlist) {
+            return res.status(404).send({ message: "No wishlist found of this user" });
+        }
+
+        const productIndex = wishlist.products.findIndex(item => item.product_id === productId);
+
+        if (productIndex === -1) {
+            return res.status(404).json({ message: 'Product not found in the wishlist' });
+        }
+
+        res.status(200).send({ message: "Product is in wishlist" });
+    } catch (error) {
+        console.log(`Error while checking if product already in wishlist: ${error}`)
+        res.status(500).send({ message: "Something wrong happened" });
+    }
+}
+module.exports = { addToWishlist, getWishlist, removeFromWishlist, isProductInWishlist };
