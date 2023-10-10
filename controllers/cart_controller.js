@@ -112,8 +112,10 @@ const decreaseProductQuantity = async (req, res) => {
             return res.status(404).send({ message: "Product is not in cart" });
         }
 
-        if (existingProduct.cart_quantity > 0) {
+        if (existingProduct.cart_quantity > 1) {
             existingProduct.cart_quantity -= 1;
+        } else if (existingProduct.cart_quantity == 1) {
+            cartItems.products.splice(existingProduct, 1);
         }
 
         await cartItems.save();
@@ -143,7 +145,7 @@ const removeFromCart = async (req, res) => {
 
         await cartItems.save();
 
-        return res.status(201).json({ message: 'Product removed from cart successfully' });
+        return res.status(201).send(cartItems);
     } catch (err) {
         console.error(`Error while removing from cart: ${err}`);
         return res.status(500).json({ message: 'Internal Server Error' });

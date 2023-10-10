@@ -41,7 +41,7 @@ const addAddress = async (req, res) => {
 
         const updatedUser = await existingUser.save();
 
-        res.status(201).send({ message: "Successfully updated address", user: { ...updatedUser._doc } });
+        res.status(201).send({ message: "Successfully updated address", addresses: updatedUser.address });
     } catch (error) {
         console.log(`Error while adding address, ${error}`);
         res.status(500).send({ message: "Something wrong happened" });
@@ -65,4 +65,72 @@ const updateProfileImageUrl = async (req, res) => {
     }
 }
 
-module.exports = { getUserInfo, addAddress, updateProfileImageUrl }
+const getUserAddresses = async (req, res) => {
+    const { email } = req.query;
+
+    try {
+        const existingUser = await User.findOne({ email });
+
+        if (!existingUser) {
+            return res.status(404).send({ message: "User not found with this email" });
+        }
+
+        res.status(200).send({ addresses: existingUser.address });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: "Something wrong happened" });
+    }
+}
+
+const getSelectedAddress = async (req, res) => {
+    const { email } = req.query;
+
+    try {
+        const existingUser = await User.findOne({ email });
+
+        if (!existingUser) {
+            return res.status(404).send({ message: "User not found with this email" });
+        }
+
+        const selectedAddress = existingUser.address.find(address => address.selected == true);
+
+        res.status(200).send({ selected_address: selectedAddress });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: "Something wrong happened" });
+    }
+}
+
+const updateUserInfo = async (req, res) => {
+    const { email } = req.body;
+
+    try {
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(404).send({ message: "User not found with this email" });
+        }
+
+        if (req.body.name) {
+            user.name = req.body.name;
+        }
+        if (req.body.bio) {
+            user.bio = req.body.bio;
+        }
+        if (req.body.gender) {
+            user.gender = req.body.gender;
+        }
+        if (req.body.phone) {
+            user.phone = req.body.phone;
+        }
+
+        const updatedUser = await user.save();
+
+        res.status(201).send(updatedUser);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: "Something wrong happened" });
+    }
+}
+
+module.exports = { getUserInfo, addAddress, updateProfileImageUrl, getUserAddresses, getSelectedAddress, updateUserInfo }

@@ -53,21 +53,6 @@ const userSchema = new Schema({
             }
         }
     ],
-    wish_list: [
-        {
-            type: String,
-        }
-    ],
-    cart_list: [
-        {
-            type: String,
-        }
-    ],
-    orders_list: [
-        {
-            type: String,
-        }
-    ],
     gender: {
         type: String,
     },

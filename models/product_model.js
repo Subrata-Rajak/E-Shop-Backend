@@ -45,6 +45,22 @@ const productSchema = new Schema({
         {
             type: String,
         }
+    ],
+    discount: {
+        type: Number,
+    },
+    coupons: [
+        {
+            coupon_type: {
+                type: String,
+            },
+            coupon_description: {
+                type: String,
+            },
+            coupon_discount: {
+                type: Number,
+            }
+        }
     ]
 });
 
