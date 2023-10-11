@@ -111,4 +111,21 @@ const getProductByCategory = async (req, res) => {
     }
 }
 
-module.exports = { addProduct, getAllProducts, getProductById, getProductsByOwner, getProductsByBrand, getProductByCategory };
+const searchProduct = async (req, res) => {
+    const { tag } = req.query;
+
+    try {
+        const products = await Product.find({ 'search_tags': tag });
+
+        if (!products) {
+            return res.status(404).send({ message: "No product found with this tag" });
+        }
+
+        res.status(200).send({ products });
+    } catch (error) {
+        console.log(`Error while searching products ${error}`);
+        res.status(500).send({ message: "Something wrong happened" });
+    }
+}
+
+module.exports = { addProduct, getAllProducts, getProductById, getProductsByOwner, getProductsByBrand, getProductByCategory, searchProduct };

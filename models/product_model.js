@@ -61,7 +61,13 @@ const productSchema = new Schema({
                 type: Number,
             }
         }
-    ]
+    ],
+    search_tags: [
+        {
+            type: String,
+            required: true,
+        },
+    ],
 });
 
 const Product = mongoose.model('Product', productSchema);
