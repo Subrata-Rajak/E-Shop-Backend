@@ -37,6 +37,15 @@ const addAddress = async (req, res) => {
             selected,
         };
 
+        if (selected) {
+            const addressIndex = existingUser.address.findIndex(item => item.selected == true);
+
+            if (addressIndex >= 0) {
+                existingUser.address[addressIndex].selected = false;
+                await existingUser.save()
+            }
+        }
+
         existingUser.address.push(newAddress);
 
         const updatedUser = await existingUser.save();
@@ -44,6 +53,61 @@ const addAddress = async (req, res) => {
         res.status(201).send({ message: "Successfully updated address", addresses: updatedUser.address });
     } catch (error) {
         console.log(`Error while adding address, ${error}`);
+        res.status(500).send({ message: "Something wrong happened" });
+    }
+}
+
+const editAddress = async (req, res) => {
+    const { email, pincode } = req.body;
+
+    try {
+        const existingUser = await User.findOne({ email });
+
+        if (!existingUser) {
+            return res.status(404).send({ message: "User with this email not found" });
+        }
+
+        const addressIndex = existingUser.address.findIndex(item => item.pincode === pincode);
+
+        if (addressIndex === -1) {
+            return res.status(404).send({ message: "Address not found" });
+        }
+
+        if (req.body.country) {
+            existingUser.address[addressIndex].country = req.body.country;
+        }
+        if (req.body.state) {
+            existingUser.address[addressIndex].state = req.body.state;
+        }
+        if (req.body.city) {
+            existingUser.address[addressIndex].city = req.body.city;
+        }
+        if (req.body.landmark) {
+            existingUser.address[addressIndex].landmark = req.body.landmark;
+        }
+        if (req.body.pincode) {
+            existingUser.address[addressIndex].pincode = req.body.pincode;
+        }
+        if (req.body.area) {
+            existingUser.address[addressIndex].area = req.body.area;
+        }
+        if (req.body.selected) {
+
+            const address2Index = existingUser.address.findIndex(item => item.selected == true);
+
+            if (address2Index >= 0) {
+                existingUser.address[address2Index].selected = false;
+                await existingUser.save()
+            }
+
+            existingUser.address[addressIndex].selected = req.body.selected;
+        }
+
+        const updatedUser = await existingUser.save();
+
+        res.status(201).send({ message: "Successfully updated address", addresses: updatedUser.address });
+    } catch (error) {
+        console.log(`Error while adding address: ${error}`);
         res.status(500).send({ message: "Something wrong happened" });
     }
 }
@@ -133,4 +197,4 @@ const updateUserInfo = async (req, res) => {
     }
 }
 
-module.exports = { getUserInfo, addAddress, updateProfileImageUrl, getUserAddresses, getSelectedAddress, updateUserInfo }
+module.exports = { getUserInfo, addAddress, updateProfileImageUrl, getUserAddresses, getSelectedAddress, updateUserInfo, editAddress }
